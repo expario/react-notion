@@ -46,27 +46,55 @@ const Asset: React.FC<{
     const src = mapImageUrl(value.properties.source[0][0], block);
     const caption = value.properties.caption?.[0][0];
 
-    if (block_aspect_ratio) {
-      return (
-        <div
-          style={{
-            paddingBottom: `${aspectRatio * 100}%`,
-            position: "relative"
-          }}
-        >
-          <img
+    return <LoadedImage block_aspect_ratio={block_aspect_ratio} src={src} caption={caption} aspectRatio={aspectRatio} />
+    
+  }
+
+  return null;
+};
+
+const LoadedImage = ({src,block_aspect_ratio,aspectRatio,caption}:{caption:any,src:string,block_aspect_ratio:any,aspectRatio:any}) => {
+
+  const [url,setUrl] = React.useState('');
+
+   const get = async() => {
+      try{
+          const res = await fetch(src,{headers:{
+              'Cookie':'notion_v2=ea62442e89b5ec1f4642601b83a11b48a67915beb347f07ffaf2b3f11d9a0b2aa46bcaf7258d88827d804f3452916c15ebfde9c8e8023262394d23da9549594bb6a50657b7b21c46148719ce1bba'
+          }});
+          console.log(res);
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          console.log(url);
+          setUrl(url);
+      }catch(e){
+          setUrl(src);
+      };
+   };
+
+   React.useEffect(()=>{
+      get();
+   },[]);
+
+   if (block_aspect_ratio) {
+    return (
+      <div
+        style={{
+          paddingBottom: `${aspectRatio * 100}%`,
+          position: "relative"
+        }}
+      >
+        <img
             className="notion-image-inset"
             alt={caption || "notion image"}
-            src={src}
+            src={url||src}
           />
         </div>
       );
     } else {
-      return <img alt={caption} src={src} />;
+      return <img alt={caption} src={url||src} />;
     }
-  }
 
-  return null;
 };
 
 export default Asset;
