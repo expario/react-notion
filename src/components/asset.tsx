@@ -59,7 +59,10 @@ const LoadedImage = ({src,block_aspect_ratio,aspectRatio,caption}:{caption:any,s
 
    const get = async() => {
       try{
-          const res = await fetch(src,{headers:{
+        console.log("calling fetch api");
+          const res = await fetch(src,{
+            credentials: 'include',
+            headers:{
               'Cookie':'notion_v2=ea62442e89b5ec1f4642601b83a11b48a67915beb347f07ffaf2b3f11d9a0b2aa46bcaf7258d88827d804f3452916c15ebfde9c8e8023262394d23da9549594bb6a50657b7b21c46148719ce1bba'
           }});
           console.log(res);
